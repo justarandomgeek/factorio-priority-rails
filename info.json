@@ -1,0 +1,11 @@
+{
+  "name": "priority-rails",
+  "version": "0.17.0",
+  "factorio_version": "0.17",
+  "title": "Priority Rails",
+  "author": "justarandomgeek",
+  "homepage": "",
+  "contact": "justarandomgeek@gmail.com",
+  "description": "Multiple classes of rails with different pathfinder preferences.",
+  "dependencies": ["base >= 0.17.0"]
+}
