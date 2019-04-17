@@ -22,83 +22,54 @@ local function applyTint(proto,tint)
 end
 
 
-local lsrail = table.deepcopy(data.raw['straight-rail']['straight-rail'])
-lsrail.name = "local-straight-rail"
-lsrail.minable.result = "local-rail"
-lsrail.path_cost_multiplier = settings['local-rail-multiplier']
-applyTint(lsrail,{r=0.8,g=0.8,b=0.2})
+local function makeRailClass(prefix,multiplier,tint)
 
-local lcrail = table.deepcopy(data.raw['curved-rail']['curved-rail'])
-lcrail.name = "local-curved-rail"
-lcrail.minable.result = "local-rail"
-lcrail.placeable_by.item = "local-rail"
-lcrail.path_cost_multiplier = settings['local-rail-multiplier']
-applyTint(lcrail,{r=0.8,g=0.8,b=0.2})
+  local srail = table.deepcopy(data.raw['straight-rail']['straight-rail'])
+  srail.name = prefix .. "-straight-rail"
+  srail.minable.result = prefix .. "-rail"
+  srail.path_cost_multiplier = multiplier
+  applyTint(srail,tint)
 
-local esrail = table.deepcopy(data.raw['straight-rail']['straight-rail'])
-esrail.name = "express-straight-rail"
-esrail.minable.result = "express-rail"
-esrail.path_cost_multiplier = settings['express-rail-multiplier']
-applyTint(esrail,{r=0.6,g=0.6,b=1})
+  local crail = table.deepcopy(data.raw['curved-rail']['curved-rail'])
+  crail.name = prefix .. "-curved-rail"
+  crail.minable.result = prefix .. "-rail"
+  crail.placeable_by.item = prefix .. "-rail"
+  crail.path_cost_multiplier = multiplier
+  applyTint(crail,tint)
 
-local ecrail = table.deepcopy(data.raw['curved-rail']['curved-rail'])
-ecrail.name = "express-curved-rail"
-ecrail.minable.result = "express-rail"
-ecrail.placeable_by.item = "express-rail"
-ecrail.path_cost_multiplier = settings['express-rail-multiplier']
-applyTint(ecrail,{r=0.6,g=0.6,b=1})
+  local rail = table.deepcopy(data.raw['rail-planner']['rail'])
+  rail.name = prefix .. "-rail"
+  rail.icons = {
+    {icon = rail.icon, tint = tint}
+  }
+  rail.icon = nil
+  rail.localised_name = {"item-name." .. prefix .. "-rail"}
+  rail.place_result = prefix .. "-straight-rail"
+  rail.straight_rail = prefix .. "-straight-rail"
+  rail.curved_rail = prefix .. "-curved-rail"
+  rail.order = "a[train-system]-a[rail]"
 
-local erail = table.deepcopy(data.raw['rail-planner']['rail'])
-erail.name = "express-rail"
-erail.icons = {
-  {icon = erail.icon, tint = {r=0.6,g=0.6,b=1}}
-}
-erail.icon = nil
-erail.localised_name = {"item-name.express-rail"}
-erail.place_result = "express-straight-rail"
-erail.straight_rail = "express-straight-rail"
-erail.curved_rail = "express-curved-rail"
-erail.order = "a[train-system]-b[rail]"
+  data:extend{
+    srail,
+    crail,
+    rail,
+    {
+      type = "recipe",
+      name = prefix .. "-rail",
+      enabled = false,
+      ingredients =
+      {
+        {"rail", 1},
+      },
+      result = prefix .. "-rail",
+    },
+  }
+end
 
-local lrail = table.deepcopy(data.raw['rail-planner']['rail'])
-lrail.name = "local-rail"
-lrail.icons = {
-  {icon = lrail.icon, tint = {r=0.8,g=0.8,b=0.2}}
-}
-lrail.icon = nil
-lrail.localised_name = {"item-name.local-rail"}
-lrail.place_result = "local-straight-rail"
-lrail.straight_rail = "local-straight-rail"
-lrail.curved_rail = "local-curved-rail"
-lrail.order = "a[train-system]-5[rail]"
+makeRailClass("local", settings['local-rail-multiplier'], {r=0.8,g=0.8,b=0.2})
+makeRailClass("express", settings['express-rail-multiplier'], {r=0.6,g=0.6,b=1})
 
 data:extend{
-  lsrail,
-  esrail,
-  lcrail,
-  ecrail,
-  erail,
-  lrail,
-  {
-    type = "recipe",
-    name = "local-rail",
-    enabled = false,
-    ingredients =
-    {
-      {"rail", 1},
-    },
-    result = "local-rail",
-  },
-  {
-    type = "recipe",
-    name = "express-rail",
-    enabled = false,
-    ingredients =
-    {
-      {"rail", 1},
-    },
-    result = "express-rail",
-  },
   {
     type = "technology",
     name = "railway-2",
