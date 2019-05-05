@@ -66,8 +66,8 @@ local function makeRailClass(prefix,multiplier,tint)
   }
 end
 
-makeRailClass("local", settings['local-rail-multiplier'], {r=0.8,g=0.8,b=0.2})
-makeRailClass("express", settings['express-rail-multiplier'], {r=0.6,g=0.6,b=1})
+makeRailClass("local", settings['startup']['local-rail-multiplier'].value, {r=0.8,g=0.8,b=0.2})
+makeRailClass("express", settings['startup']['express-rail-multiplier'].value, {r=0.6,g=0.6,b=1})
 
 data:extend{
   {
